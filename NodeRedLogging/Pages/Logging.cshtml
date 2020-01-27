@@ -1,0 +1,31 @@
+﻿@page
+@model NodeRedLogging.LoggingModel
+@{
+    ViewData["Title"] = "Logging";
+}
+
+<h1>Logging</h1>
+<table class="table">
+    <thead>
+    <tr>
+        <th>Timestamp</th>
+        <th>Level</th>
+        <th>Module</th>
+        <th>Component</th>
+        <th>Message</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var contact in Model.Logs)
+    {
+        <tr>
+            <td> @contact.Timestamp  </td>
+            <td> @contact.Level  </td>
+            <td> @contact.Module  </td>
+            <td> @contact.Component  </td>
+            <td> @contact.Message  </td>
+        </tr>
+    }
+    </tbody>
+</table>
+

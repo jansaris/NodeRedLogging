@@ -23,18 +23,24 @@ namespace NodeRedLogging.Mqtt
 
         public async Task Initialize()
         {
-            _mqttClient = await System.Net.Mqtt.MqttClient.CreateAsync(Host);
-            _logger.LogInformation($"Connect to {Host}");
-            await _mqttClient.ConnectAsync();
-            _logger.LogInformation($"Connected to {Host}");
-            await _mqttClient.SubscribeAsync(Topic, MqttQualityOfService.ExactlyOnce);
-            _logger.LogInformation($"Subscribed to {Topic}");
-            _mqttClient.MessageStream.Subscribe(OnMessage);
+            try
+            {
+                _mqttClient = await System.Net.Mqtt.MqttClient.CreateAsync(Host);
+                _logger.LogInformation($"Connect to {Host}");
+                await _mqttClient.ConnectAsync();
+                _logger.LogInformation($"Connected to {Host}");
+                await _mqttClient.SubscribeAsync(Topic, MqttQualityOfService.ExactlyOnce);
+                _logger.LogInformation($"Subscribed to {Topic}");
+                _mqttClient.MessageStream.Subscribe(OnMessage);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError($"Something went wrong: {ex.Message}");
+            }
         }
 
         private void OnMessage(MqttApplicationMessage msg)
         {
-            _logger.LogInformation($"Received {msg.Payload.Length} bytes");
             var logMessage = Encoding.UTF8.GetString(msg.Payload);
             if(!ParseAndLog(logMessage)) _logger.LogWarning($"RAW: {logMessage}");
         }
@@ -46,7 +52,7 @@ namespace NodeRedLogging.Mqtt
                 var message = JsonConvert.DeserializeObject<Message>(jsonMessage);
                 if (message.LogInfo == null || string.IsNullOrWhiteSpace(message.LogInfo.Flow))
                 {
-                    _logger.LogWarning("No log info");
+                    //_logger.LogWarning("No log info");
                     return false;
                 }
 

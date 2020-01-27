@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using NodeRedLogging.Logging;
 using NodeRedLogging.Mqtt;
 
 namespace NodeRedLogging
@@ -26,14 +27,16 @@ namespace NodeRedLogging
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRazorPages();
+            services.AddSingleton<InMemoryLogger>();
             services.AddSingleton<MqttClient>();
 
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, MqttClient mqtt)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory, MqttClient mqtt, InMemoryLogger inMemoryLogger)
         {
             loggerFactory.AddLog4Net();
+            inMemoryLogger.AttachToLog4net();
             mqtt.Initialize();
 
             if (env.IsDevelopment())
