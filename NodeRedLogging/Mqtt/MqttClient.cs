@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using NodeRedLogging.Mqtt.LogModel;
 
 namespace NodeRedLogging.Mqtt
 {
@@ -50,15 +51,15 @@ namespace NodeRedLogging.Mqtt
             try
             {
                 var message = JsonConvert.DeserializeObject<Message>(jsonMessage);
-                if (message.LogInfo == null || string.IsNullOrWhiteSpace(message.LogInfo.Flow))
+                if (message.Node == null || string.IsNullOrWhiteSpace(message.Node.Flow))
                 {
-                    //_logger.LogWarning("No log info");
+                    _logger.LogWarning("No log info");
                     return false;
                 }
 
-                var logger = _loggerFactory.CreateLogger($"Flow.{message.LogInfo.Flow}");
-                var level = GetLogLevel(message.LogInfo.Level);
-                logger.Log(level, jsonMessage);
+                var logger = _loggerFactory.CreateLogger($"Flow.{message.Node.Flow}");
+                var level = GetLogLevel(string.Empty);
+                logger.Log(level, message.ToString());
                 return true;
             }
             catch(Exception ex)
