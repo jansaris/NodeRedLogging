@@ -57,7 +57,7 @@ namespace NodeRedLogging.Mqtt
                     return false;
                 }
 
-                var logger = _loggerFactory.CreateLogger($"Flow.{message.Node.Flow}");
+                var logger = _loggerFactory.CreateLogger($"{message.Node.Flow}.{message.Node.NameOrType}");
                 var level = GetLogLevel(string.Empty);
                 logger.Log(level, message.ToString());
                 return true;

@@ -22,12 +22,12 @@ namespace NodeRedLogging.Logging
         protected override void Append(LoggingEvent loggingEvent)
         {
             var logName = loggingEvent.LoggerName.Split('.');
-            var module = logName.FirstOrDefault();
-            var component = logName.Length > 1 ? string.Join(".", logName.Skip(1)) : module;
+            var flow = logName.FirstOrDefault();
+            var node = logName.Length > 1 ? string.Join(".", logName.Skip(1)) : flow;
             var model = new LogModel
             {
-                Module = module,
-                Component = component,
+                Flow = flow,
+                Node = node,
                 Message = loggingEvent.RenderedMessage,
                 Timestamp = loggingEvent.TimeStamp,
                 Level = loggingEvent.Level.DisplayName
@@ -35,9 +35,9 @@ namespace NodeRedLogging.Logging
             _logList.Add(model);
         }
 
-        public IEnumerable<LogModel> GetByModule(string name)
+        public IEnumerable<LogModel> GetByFlow(string name)
         {
-            return _logList.Where(m => m.Module == name).ToList().AsReadOnly();
+            return _logList.Where(m => m.Flow == name).ToList().AsReadOnly();
         }
 
         public IEnumerable<LogModel> GetAll()

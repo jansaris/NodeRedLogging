@@ -5,6 +5,7 @@
         public string Id { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
+        public string NameOrType => string.IsNullOrWhiteSpace(Name) ? Type : Name;
         public string Flow { get; set; }
         public override string ToString()
         {
